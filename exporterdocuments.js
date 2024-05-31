@@ -411,7 +411,7 @@ function go() {
 
 var btn = document.getElementById("loan-btn");
 if (btn.classList.contains("disabled")) {
-    alert("Il faut lancer ce programme sur l'onglet \"Prêt\" !");
+    alert("Il faut lancer ce programme sur l'onglet \"Prêt\" !\nRechargez la page et lancez le programme sur le bon onglet.");
 } else {
     document.body.appendChild(overlay);
     createBox();
