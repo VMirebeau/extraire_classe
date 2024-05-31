@@ -1,4 +1,5 @@
 let names = [];
+let originalNames = [];
 let all_docs = [];
 var checkBookInterval, checkTableLoansInterval, checkListePrets;
 let currentIdName = 0;
@@ -101,34 +102,18 @@ function getTexte(texte) {
     // Séparation des lignes du texte
     const lignes = texte.split('\n');
 
-    // Vérifier si la première ligne correspond aux en-têtes spécifiés
-    /*const entetesAttendues = [
-        "Élève",
-        "Né(e) le",
-        "Classe de rattachement",
-        "Groupes"
-    ];
-
-    const premierLigne = lignes[0].trim();
-    const premierLigneEntetes = premierLigne.split('\t');
-
-    // Vérifier si les en-têtes correspondent aux en-têtes attendues
-    const entetesValides = entetesAttendues.every((entete, index) => {
-        return premierLigneEntetes[index].replace(/"/g, '') === entete;
-    });
-
-    if (!entetesValides) {
-        updateInfo("Le texte collé ne correspond pas au format attendu.", true);
-        return;
-    }*/
-
     // Parcourir chaque ligne à partir de la deuxième ligne
     for (let i = 0; i < lignes.length; i++) {
         const ligne = lignes[i].trim();
         // Si la ligne n'est pas vide, extraire le nom de l'élève et l'ajouter à la liste des noms
         if (ligne !== '') {
             const nomEleve = ligne.split('\t')[0].trim().replace(/"/g, '');
-            names.push(nomEleve);
+            const mots = nomEleve.split(' ');
+            const dernierMot = mots.pop().trim();
+            const partieInitiale = mots.join(' ').trim();
+            const concatenatedName = `${dernierMot} ${partieInitiale}`;
+            originalNames.push(nomEleve);
+            names.push(concatenatedName);
         }
     }
 
@@ -301,9 +286,9 @@ function processTableContent() {
 
             if (contents.length > 0) {
                 console.log("Utilisateur : " + names[currentIdName] + ". Documents trouvés : " + contents.join(" / "));
-                all_docs.push([names[currentIdName], contents]);
-                if (!resemble(names[currentIdName], document.getElementById('nameHead').innerText)) {
-                    let avertissement = names[currentIdName] + " > " + document.getElementById('nameHead').innerText;
+                all_docs.push([originalNames[currentIdName], contents]);
+                if (!resemble(originalNames[currentIdName], document.getElementById('nameHead').innerText)) {
+                    let avertissement = originalNames[currentIdName] + " > " + document.getElementById('nameHead').innerText;
                     console.log("!!! ATTENTION, une association douteuse a été identifiée : " + avertissement + " !!!");
                     associations_douteuses.push(avertissement);
                 }
@@ -397,6 +382,7 @@ function checkPretMain() {
 
 function go() {
     names = [];
+    originalNames = []
     all_docs = [];
     checkBookInterval, checkTableLoansInterval, checkListePrets = null;
     currentIdName = 0;
@@ -465,7 +451,17 @@ function createTable() {
         row.appendChild(td2);
 
         const td3 = document.createElement("td");
-        td3.innerText = name[1].join(" / ");
+        const ul = document.createElement("ul");
+        ul.style.marginTop = "5px";
+        ul.style.marginBottom = "5px";
+
+        name[1].forEach(item => {
+            const li = document.createElement("li");
+            li.innerText = item;
+            ul.appendChild(li);
+        });
+
+        td3.appendChild(ul);
         td3.style.padding = "8px"; // Add padding to cell
         row.appendChild(td3);
 
