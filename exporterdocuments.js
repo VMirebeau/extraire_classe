@@ -91,6 +91,7 @@ function createPopup() {
         //document.body.removeChild(popupDiv);
 
     });
+    showOverlay();
 }
 
 
@@ -151,7 +152,8 @@ overlay.style.zIndex = '999';
 overlay.addEventListener('click', function (event) {
     if (event.target === overlay) {
         document.body.removeChild(popup);
-        overlay.remove();
+        hideFloatingDivAndStopOperations();
+        document.body.removeChild(overlay); // Supprimer l'overlay
     }
 });
 
@@ -244,26 +246,21 @@ function checkListe() {
     if (currentIdName < names.length) checkPretMain(); else {
         updateProgression();
 
-        updateInfo("Termine !")
+        updateInfo("Terminé !")
         createPopupWithTable();
     }
 }
 
-// Fonction pour remplacer l'événement lorsque le clic sur l'icône du livre a été effectué
-/*
-function replaceEventListener() {
-    document.getElementById("loansTab").addEventListener("click", function() {
-        // Vérifier si l'élément d'ID "table-loans" existe
-        var tableLoans = document.getElementById("table-loans");
-        if (tableLoans) {
-            clearInterval(checkTableLoansInterval); // Arrêter la vérification une fois que l'élément est trouvé
-            processTableContent();
-            console.log(all_docs);
-            currentIdName++;
-            checkPretMain();
-        }
-    });
-}*/
+function showOverlay() {
+    document.body.appendChild(overlay);
+}
+
+// Fonction pour masquer l'overlay
+function hideOverlay() {
+    document.body.removeChild(overlay);
+}
+
+
 
 function processTableContent() {
     let table = document.getElementById('table-loans');
@@ -574,6 +571,8 @@ function createPopupWithTable() {
         }
 
     }
+    showOverlay();
+
 }
 
 
@@ -665,4 +664,17 @@ function resemble(name1, name2) {
     }
 
     return true;
+}
+
+function hideFloatingDivAndStopOperations() {
+    // Supprimer le floatingDiv s'il existe
+    var floatingDiv = document.getElementById('floatingDiv');
+    if (floatingDiv) {
+        floatingDiv.remove();
+    }
+
+    // Arrêter toutes les intervalles en cours
+    clearInterval(checkBookInterval);
+    clearInterval(checkTableLoansInterval);
+    clearInterval(checkListePrets);
 }
