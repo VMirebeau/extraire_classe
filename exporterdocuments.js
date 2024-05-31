@@ -2,23 +2,19 @@ let names = [];
 let all_docs = [];
 var checkBookInterval, checkTableLoansInterval, checkListePrets;
 let currentIdName = 0;
-const delay=100;
+const delay = 100;
 let associations_douteuses = [];
 
-function updateProgression()
-{
+function updateProgression() {
     let textId = document.getElementById("topTextId");
-    if (textId)
-        {
-            textId.innerText = currentIdName + " / " + names.length;
-        }
+    if (textId) {
+        textId.innerText = currentIdName + " / " + names.length;
+    }
 }
 
-function updateInfo(texte, err = false)
-{
+function updateInfo(texte, err = false) {
     let textId = document.getElementById("bottomTextId");
-    if (textId)
-    {
+    if (textId) {
         textId.innerText = texte;
         if (err) {
             textId.style.backgroundColor = "lightcoral"; // Rouge clair
@@ -53,23 +49,23 @@ function createPopup() {
     textarea.style.marginBottom = '20px';
 
     // Ajouter un écouteur d'événement à la textarea pour observer les modifications
-textarea.addEventListener('input', function() {
-    // Récupérer le texte collé dans la textarea
-    const texte = textarea.value.trim();
-    // Vérifier si le texte correspond au format attendu
-    if (texte.startsWith("Élève\t\"Né(e) le\"\t\"Classe de rattachement\"\tGroupes")) {
-        // Si oui, normaliser le texte et mettre à jour la textarea avec la liste des prénoms normalisée
-        const nomsNormalises = normaliserTexte(texte);
-        textarea.value = nomsNormalises.join('\n');
-    }
-});
+    textarea.addEventListener('input', function () {
+        // Récupérer le texte collé dans la textarea
+        const texte = textarea.value.trim();
+        // Vérifier si le texte correspond au format attendu
+        if (texte.startsWith("Élève\t\"Né(e) le\"\t\"Classe de rattachement\"\tGroupes")) {
+            // Si oui, normaliser le texte et mettre à jour la textarea avec la liste des prénoms normalisée
+            const nomsNormalises = normaliserTexte(texte);
+            textarea.value = nomsNormalises.join('\n');
+        }
+    });
 
-// Fonction pour normaliser le texte collé au bon format
-function normaliserTexte(texte) {
-    const lignes = texte.split('\n').slice(1); // Supprimer la première ligne (en-têtes)
-    const noms = lignes.map(ligne => ligne.split('\t')[0].trim().replace(/"/g, '')); // Extraire les noms et supprimer les guillemets doubles
-    return noms;
-}
+    // Fonction pour normaliser le texte collé au bon format
+    function normaliserTexte(texte) {
+        const lignes = texte.split('\n').slice(1); // Supprimer la première ligne (en-têtes)
+        const noms = lignes.map(ligne => ligne.split('\t')[0].trim().replace(/"/g, '')); // Extraire les noms et supprimer les guillemets doubles
+        return noms;
+    }
 
     // Création du bouton OK
     var okButton = document.createElement('button');
@@ -85,7 +81,7 @@ function normaliserTexte(texte) {
     document.body.appendChild(popupDiv);
 
     // Ajout d'un événement au bouton OK
-    okButton.addEventListener('click', function() {
+    okButton.addEventListener('click', function () {
         var texte = textarea.value;
         getTexte(texte);
         overlay.remove();
@@ -96,14 +92,14 @@ function normaliserTexte(texte) {
 
     });
 }
-createBox();
+
 
 
 // Fonction pour récupérer le texte de la textarea
 function getTexte(texte) {
     // Séparation des lignes du texte
     const lignes = texte.split('\n');
-    
+
     // Vérifier si la première ligne correspond aux en-têtes spécifiés
     /*const entetesAttendues = [
         "Élève",
@@ -124,7 +120,7 @@ function getTexte(texte) {
         updateInfo("Le texte collé ne correspond pas au format attendu.", true);
         return;
     }*/
-    
+
     // Parcourir chaque ligne à partir de la deuxième ligne
     for (let i = 0; i < lignes.length; i++) {
         const ligne = lignes[i].trim();
@@ -134,7 +130,7 @@ function getTexte(texte) {
             names.push(nomEleve);
         }
     }
-    
+
     console.log("Noms extraits :", names);
     // Appeler la fonction pour traiter les prêts
     checkPretMain();
@@ -152,43 +148,41 @@ overlay.style.width = '100%';
 overlay.style.height = '100%';
 overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
 overlay.style.zIndex = '999';
-overlay.addEventListener('click', function(event) {
+overlay.addEventListener('click', function (event) {
     if (event.target === overlay) {
         document.body.removeChild(popup);
         overlay.remove();
     }
 });
 
-// Ajout de la zone grise à la page
-document.body.appendChild(overlay);
 
 function createBox() {
-        // Créer le div flottant
-        var floatingDiv = document.createElement('div');
-        floatingDiv.id = 'floatingDiv';
+    // Créer le div flottant
+    var floatingDiv = document.createElement('div');
+    floatingDiv.id = 'floatingDiv';
 
-        // Créer le texte en haut
-        var topText = document.createElement('div');
-        topText.className = 'topText';
-        topText.id = "topTextId";
-        topText.textContent = '10/20';
+    // Créer le texte en haut
+    var topText = document.createElement('div');
+    topText.className = 'topText';
+    topText.id = "topTextId";
+    topText.textContent = '10/20';
 
-        // Créer le texte en bas
-        var bottomText = document.createElement('div');
-        bottomText.className = 'bottomText';
-        bottomText.id = "bottomTextId";
-        bottomText.textContent = 'En attente';
+    // Créer le texte en bas
+    var bottomText = document.createElement('div');
+    bottomText.className = 'bottomText';
+    bottomText.id = "bottomTextId";
+    bottomText.textContent = 'En attente';
 
-        // Ajouter les éléments enfants au div flottant
-        floatingDiv.appendChild(topText);
-        floatingDiv.appendChild(bottomText);
+    // Ajouter les éléments enfants au div flottant
+    floatingDiv.appendChild(topText);
+    floatingDiv.appendChild(bottomText);
 
-        // Ajouter le div flottant au body
-        document.body.appendChild(floatingDiv);
+    // Ajouter le div flottant au body
+    document.body.appendChild(floatingDiv);
 
-        // Ajouter les styles pour le div flottant
-        var style = document.createElement('style');
-        style.textContent = `
+    // Ajouter les styles pour le div flottant
+    var style = document.createElement('style');
+    style.textContent = `
             #floatingDiv {
                 position: fixed;
                 top: 100px;
@@ -219,11 +213,11 @@ function createBox() {
                 padding: 10px;
             }
         `;
-        document.head.appendChild(style);
-        updateProgression();
+    document.head.appendChild(style);
+    updateProgression();
 }
 
-createPopup();
+
 
 ////////////////////
 
@@ -232,7 +226,7 @@ function clickOnLoansTab() {
     var loansTab = document.getElementById("loansTab");
     if (loansTab) {
         clearInterval(checkTableLoansInterval);
-        loansTab.click();        
+        loansTab.click();
 
         checkListePrets = setInterval(checkListe, delay); // Vérifier toutes les 500 millisecondes
 
@@ -242,19 +236,17 @@ function clickOnLoansTab() {
     }
 }
 
-function checkListe() 
-{
-        clearInterval(checkListePrets); // Arrêter la vérification une fois que l'élément est trouvé
-            processTableContent();
-            //console.log(all_docs);
-            currentIdName++;
-            if (currentIdName < names.length) checkPretMain(); else 
-            {
-                updateProgression();
+function checkListe() {
+    clearInterval(checkListePrets); // Arrêter la vérification une fois que l'élément est trouvé
+    processTableContent();
+    //console.log(all_docs);
+    currentIdName++;
+    if (currentIdName < names.length) checkPretMain(); else {
+        updateProgression();
 
-                updateInfo("Termine !")
-                createPopupWithTable();
-            }
+        updateInfo("Termine !")
+        createPopupWithTable();
+    }
 }
 
 // Fonction pour remplacer l'événement lorsque le clic sur l'icône du livre a été effectué
@@ -287,23 +279,23 @@ function processTableContent() {
                     if (thirdCell) {
                         let text = thirdCell.innerText.trim();
 
-// Trouver l'index du premier '/'
-let firstSlashIndex = text.indexOf('/');
-if (firstSlashIndex !== -1) {
-    // Garder uniquement la partie avant le premier '/'
-    text = text.substring(0, firstSlashIndex).trim();
-}
+                        // Trouver l'index du premier '/'
+                        let firstSlashIndex = text.indexOf('/');
+                        if (firstSlashIndex !== -1) {
+                            // Garder uniquement la partie avant le premier '/'
+                            text = text.substring(0, firstSlashIndex).trim();
+                        }
 
-// Supprimer tous les caractères '[' et ']'
-text = text.replace(/\[|\]/g, '');
+                        // Supprimer tous les caractères '[' et ']'
+                        text = text.replace(/\[|\]/g, '');
 
-// Si le texte se termine par ':', supprimer ce caractère
-if (text.endsWith(':')) {
-    text = text.slice(0, -1);
-}
+                        // Si le texte se termine par ':', supprimer ce caractère
+                        if (text.endsWith(':')) {
+                            text = text.slice(0, -1);
+                        }
 
-// Trim le résultat final
-text = text.trim();
+                        // Trim le résultat final
+                        text = text.trim();
 
                         contents.push(text);
                     }
@@ -338,7 +330,7 @@ function clickOnBookIcon() {
 
 
         //replaceEventListener(); // Remplacer l'événement une fois que le clic sur l'icône du livre a été effectué
-        
+
     }
 }
 
@@ -363,7 +355,7 @@ function simulateClickOnProfileCard() {
             profileCard[0].dispatchEvent(clickEvent);
 
             checkBookInterval = setInterval(clickOnBookIcon, delay); // Vérifier toutes les 500 millisecondes
-            
+
         } else {
             updateInfo("Tapez le nom correct (sans cliquer)", true)
 
@@ -371,53 +363,62 @@ function simulateClickOnProfileCard() {
     }, 1000); // Vérifier toutes les 500 millisecondes
 }
 
-function checkPretMain()
-{
+function checkPretMain() {
     updateProgression();
     updateInfo("Exportation en cours...")
-let input = document.getElementById('usernameInput');
+    let input = document.getElementById('usernameInput');
 
 
-input.focus();
-input.value = '';  // Clear any existing value
+    input.focus();
+    input.value = '';  // Clear any existing value
 
-let delay = 1;  // Adjust the delay (in milliseconds) to simulate typing speed
-names[currentIdName].split('').forEach((char, index) => {
-    setTimeout(() => {
-        simulateKeypress(char, input);
-        if (index === names[currentIdName].length - 1) {
-            // Simulate click after typing the last character
-            //setTimeout(() => {
+    let delay = 1;  // Adjust the delay (in milliseconds) to simulate typing speed
+    names[currentIdName].split('').forEach((char, index) => {
+        setTimeout(() => {
+            simulateKeypress(char, input);
+            if (index === names[currentIdName].length - 1) {
+                // Simulate click after typing the last character
+                //setTimeout(() => {
                 simulateClickOnProfileCard();
                 //simulateClickOnPrêtsEnCours(names[currentIdName]); // Simulate click on "Prêts en cours"
                 //waitForLoansTab(); // Wait for "loansTab" to appear
                 // Vérifier périodiquement si l'élément .fa.fa-book est présent
-                
+
                 //checkTableLoansInterval = setInterval(clickOnLoansTab, 500); // Vérifier toutes les 500 millisecondes
-// Vérifier périodiquement si l'élément d'ID "table-loans" est présent
+                // Vérifier périodiquement si l'élément d'ID "table-loans" est présent
 
 
-            //}, 700);
-        }
-    }, delay * index);
-});
+                //}, 700);
+            }
+        }, delay * index);
+    });
 
 
-//setTimeout(processTableContent, 2000); // Adjust the delay as needed
+    //setTimeout(processTableContent, 2000); // Adjust the delay as needed
 
 }
 
-function go()
-{
+function go() {
     names = [];
     all_docs = [];
     checkBookInterval, checkTableLoansInterval, checkListePrets = null;
     currentIdName = 0;
-    createPopup();
     associations_douteuses = [];
+
+    createPopup();
+
 }
 
-go();
+var btn = document.getElementById("loan-btn");
+if (btn.classList.contains("disabled")) {
+    alert("Il faut lancer ce programme sur l'onglet \"Prêt\" !");
+} else {
+    document.body.appendChild(overlay);
+    createBox();
+    go();
+}
+
+
 
 ///////////// exportation du tableau
 
@@ -425,58 +426,58 @@ function createTable() {
     // Créer l'élément table
     const table = document.createElement("table");
     table.border = "1";
-  
+
     // Créer et ajouter l'en-tête du tableau
     const thead = document.createElement("thead");
     const headerRow = document.createElement("tr");
-  
+
     const th1 = document.createElement("th");
     th1.innerText = "Élève";
     th1.style.padding = "8px"; // Add padding to cell
     headerRow.appendChild(th1);
-  
+
     const th2 = document.createElement("th");
     th2.innerText = "Nombre de documents en prêt";
     th2.style.padding = "8px"; // Add padding to cell
     headerRow.appendChild(th2);
-  
+
     const th3 = document.createElement("th");
     th3.innerText = "Document(s)";
     th3.style.padding = "8px"; // Add padding to cell
     headerRow.appendChild(th3);
-  
+
     thead.appendChild(headerRow);
     table.appendChild(thead);
-  
+
     // Créer et ajouter le corps du tableau
     const tbody = document.createElement("tbody");
     let totalDocuments = 0;
-  
+
     all_docs.forEach(name => {
-      const row = document.createElement("tr");
-  
-      const td1 = document.createElement("td");
-      td1.innerText = name[0];
-      td1.style.padding = "8px"; // Add padding to cell
-      row.appendChild(td1);
-  
-      const td2 = document.createElement("td");
-      td2.innerText = name[1].length;
-      td2.style.textAlign = "right"; // Align to right
-      td2.style.padding = "8px"; // Add padding to cell
-      row.appendChild(td2);
-  
-      const td3 = document.createElement("td");
-      td3.innerText = name[1].join(" / ");
-      td3.style.padding = "8px"; // Add padding to cell
-      row.appendChild(td3);
-  
-      tbody.appendChild(row);
-      totalDocuments += name[1].length;
+        const row = document.createElement("tr");
+
+        const td1 = document.createElement("td");
+        td1.innerText = name[0];
+        td1.style.padding = "8px"; // Add padding to cell
+        row.appendChild(td1);
+
+        const td2 = document.createElement("td");
+        td2.innerText = name[1].length;
+        td2.style.textAlign = "right"; // Align to right
+        td2.style.padding = "8px"; // Add padding to cell
+        row.appendChild(td2);
+
+        const td3 = document.createElement("td");
+        td3.innerText = name[1].join(" / ");
+        td3.style.padding = "8px"; // Add padding to cell
+        row.appendChild(td3);
+
+        tbody.appendChild(row);
+        totalDocuments += name[1].length;
     });
-  
+
     table.appendChild(tbody);
-  
+
     // Ajouter la ligne du total des documents
     const tfoot = document.createElement("tfoot");
     const footerRow = document.createElement("tr");
@@ -487,9 +488,9 @@ function createTable() {
     footerCell.style.padding = "8px"; // Add padding to cell
     footerRow.appendChild(footerCell);
     tfoot.appendChild(footerRow);
-  
+
     table.appendChild(tfoot);
-  
+
     return table; // Return the table element
 }
 
@@ -536,7 +537,7 @@ function createPopupWithTable() {
     selectAllButton.textContent = 'Tout sélectionner';
     selectAllButton.style.marginRight = '20px'; // Marge entre les boutons
 
-    selectAllButton.addEventListener('click', function() {
+    selectAllButton.addEventListener('click', function () {
         selectText(tableContainer); // Sélectionne seulement le contenu du tableau
     });
 
@@ -547,7 +548,7 @@ function createPopupWithTable() {
     var okButton = document.createElement('button');
     okButton.textContent = 'Recommencer';
 
-    okButton.addEventListener('click', function() {
+    okButton.addEventListener('click', function () {
         //currentIdName = 0;
         popupDiv.remove();
         overlay.remove();
@@ -564,16 +565,15 @@ function createPopupWithTable() {
     document.body.appendChild(popupDiv);
 
     if (associations_douteuses.length > 0) // si on a trouvé des associations douteuses en chemin...
-        {
-            if (associations_douteuses.length == 1)
-                {
-                    alert("Attention, une association douteuse a été trouvée.\nMerci de bien vouloir vérifier l'association suivante :\n" + associations_douteuses[0])
-                }
-                else {
-                    alert("Attention, " + associations_douteuses.length + " associations douteuses ont été trouvées.\nMerci de bien vouloir vérifier les associations suivantes :\n" + associations_douteuses.join("\n"))
-                }
-            
+    {
+        if (associations_douteuses.length == 1) {
+            alert("Attention, une association douteuse a été trouvée.\nMerci de bien vouloir vérifier l'association suivante :\n" + associations_douteuses[0])
         }
+        else {
+            alert("Attention, " + associations_douteuses.length + " associations douteuses ont été trouvées.\nMerci de bien vouloir vérifier les associations suivantes :\n" + associations_douteuses.join("\n"))
+        }
+
+    }
 }
 
 
@@ -643,7 +643,7 @@ function resemble(name1, name2) {
 
     // Vérifier si tous les mots sont en commun
     const allCommon = words1.every(word1 => words2.includes(word1)) &&
-                      words2.every(word2 => words1.includes(word2));
+        words2.every(word2 => words1.includes(word2));
     if (allCommon) {
         return true;
     }
