@@ -284,14 +284,15 @@ function processTableContent() {
                 }
             });
 
+            if (!resemble(originalNames[currentIdName], document.getElementById('nameHead').innerText)) {
+                let avertissement = originalNames[currentIdName] + " > " + document.getElementById('nameHead').innerText;
+                console.log("!!! ATTENTION, une association douteuse a été identifiée : " + avertissement + " !!!");
+                associations_douteuses.push(avertissement);
+            }
+
             if (contents.length > 0) {
                 console.log("Utilisateur : " + names[currentIdName] + ". Documents trouvés : " + contents.join(" / "));
                 all_docs.push([originalNames[currentIdName], contents]);
-                if (!resemble(originalNames[currentIdName], document.getElementById('nameHead').innerText)) {
-                    let avertissement = originalNames[currentIdName] + " > " + document.getElementById('nameHead').innerText;
-                    console.log("!!! ATTENTION, une association douteuse a été identifiée : " + avertissement + " !!!");
-                    associations_douteuses.push(avertissement);
-                }
             } else {
                 console.log("Utilisateur : " + names[currentIdName] + ". Aucun document trouvé.");
             }
